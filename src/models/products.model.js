@@ -9,8 +9,14 @@ let productCategorySchema = new mongoose.Schema({
 })
 
 let ProductSchema = new mongoose.Schema({
-    product_id: Number,
-    product_name: String,
+    product_id: {
+      type: Number,
+      required: true
+    },
+    product_name: {
+      type: String,
+      required: true
+    },
     product_price: Number,
     product_category: {
     type: [Number],
