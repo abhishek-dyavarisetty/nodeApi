@@ -14,37 +14,6 @@ categoryRoute.get('/categories', (request, response) => {
             return response.status(200).send(getCategory);
         }
     });
-    // var category = {};
-    // var childCategory = [];
-    // CategoryModel.find({}, {category_id: 1, category_name: 1, category_child: 1, _id: 0}, (errorCategoryFind, categoryFind) => {
-    //     if (!errorCategoryFind && (!categoryFind || categoryFind.length === 0)) {
-    //         return response.status(400).send('no category present');
-    //     } else if (errorCategoryFind) {
-    //         return response.status(500).send(errorCategoryFind);
-    //     } else {
-    //         categoryFind.forEach((items, index) => {
-    //         // let id = items.category_id;
-    //         category[items.category_id] = items.category_name;
-    //         childCategory.push(items.category_child);
-    //         // let childCatedoryIds = categoryFind.category_child;
-    //         // console.log(childCatedoryIds);
-    //         });
-    //         childCategory.forEach((items) => {
-    //         items.forEach((item, index )=> {
-    //             items[index] = {category_id: item ,category_name: category[item]};
-    //             // console.log(category[item]);
-    //         });
-    //         });
-    //         // categoryFind.forEach((item) => {
-    //         //   console.log(item.category_child);
-    //         // });
-    //         // return response.status(200).send(categoryFind);
-    //     }
-    //     // console.log(category);
-    //     // console.log(childCategory);
-    //     // console.log(categoryFind);
-    //     response.status(200).send(categoryFind);
-    // });
 });
 
 categoryRoute.post('/categories', (request, response) => {

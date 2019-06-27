@@ -128,67 +128,6 @@ productRoute.put('/product', (request, response) => {
   });
 });
   
-//   else {
-//     if (request.body.product_category.length !== 0) {
-//       CategoryModel.find({category_id: {$in: request.body.product_category}}, (errorCategoryFind, categoryFind) => {
-//         if (!errorCategoryFind && (!categoryFind || categoryFind.length !== request.body.product_category.length)) {
-//           return response.status(400).send('invalid category');
-//         } else if (errorCategoryFind) {
-//           return response.status(500).send(errorCategoryFind);
-//         } else {
-//           updateProduct(request, response);
-//           // return productResponse;
-//         }
-//       });
-//     } else {
-//       updateProduct(request, response);
-//       // return productResponse;
-//     }
-//   }
-// });
-
-// function updateProduct(request, response) {
-//   ProductModel.findOne({product_id: request.query.id}, (errorProductIdFind, productIdFind) => {
-//     // return console.log(productIdFind.product_id);
-//     if (!errorProductIdFind && productIdFind) {
-//       if (request.query.id == request.body.product_id) {
-//         ProductModel.findOneAndUpdate({product_id: request.query.id}, request.body, {useFindAndModify: false ,new: true}, (errorProductFind, productFind) => {
-//           if (!errorProductFind && (!productFind || productFind === 0)) {
-//             return response.status(400).send('invalid request');
-//           } else if (errorProductFind) {
-//             return response.status(500).send(errorProductFind);
-//           } else {
-//             return response.status(200).send(productFind);
-//           }
-//         });
-//       } else {
-//         return response.status(400).send('Product id does not match with the query string');
-//       }
-//     } else {
-//       return response.status(400).send('Product does not exist please adding the product');
-//     }
-//   //   if (!errorProductIdFind && (productIdFind !== 0 || request.query.id == request.body.product_id)) {
-//   //     ProductModel.findOneAndUpdate({product_id: request.query.id}, request.body, {useFindAndModify: false ,new: true}, (errorProductFind, productFind) => {
-//   //       if (!errorProductFind && (!productFind || productFind === 0)) {
-//   //         return response.status(400).send('invalid request');
-//   //       } else if (errorProductFind) {
-//   //         return response.status(500).send(errorProductFind);
-//   //       } else {
-//   //         return response.status(200).send(productFind);
-//   //       }
-//   //     }); 
-//   //   } else if (errorProductIdFind) {
-//   //     return response.status(500).send(errorProductIdFind);
-//   //   } else {
-//   //     if (!productIdFind || productIdFind === 0) {
-//   //       return response.status(400).send('Product does not exist please adding the product');
-//   //     } else {
-//   //       return response.status(400).send('Product Id already exist');
-//   //     }
-//   //   }
-//   });
-// }
-
 function isObjectEmpty(object) {
   for(var key in object) {
     if(object.hasOwnProperty(key)) {
