@@ -1,114 +1,112 @@
 const CategoryModel = require('../models/categories.model');
+const UniqueIdModel = require('../models/unique.id');
 const express = require('express');
 const categoryRoute = express();
 
 categoryRoute.get('/categories', (request, response) => {
-    var category = {};
-    var childCategory = [];
-    CategoryModel.find({}, {category_id: 1, category_name: 1, category_child: 1, _id: 0}, (errorCategoryFind, categoryFind) => {
-        if (!errorCategoryFind && (!categoryFind || categoryFind.length === 0)) {
-            return response.status(400).send('no category present');
-        } else if (errorCategoryFind) {
-            return response.status(500).send(errorCategoryFind);
-        } else {
-            categoryFind.forEach((items, index) => {
-            // let id = items.category_id;
-            category[items.category_id] = items.category_name;
-            childCategory.push(items.category_child);
-            // let childCatedoryIds = categoryFind.category_child;
-            // console.log(childCatedoryIds);
-            });
-            childCategory.forEach((items) => {
-            items.forEach((item, index )=> {
-                items[index] = {category_id: item ,category_name: category[item]};
-                // console.log(category[item]);
-            });
-            });
-            // categoryFind.forEach((item) => {
-            //   console.log(item.category_child);
-            // });
-            // return response.status(200).send(categoryFind);
+    CategoryModel.find({}, (errorGetCategory, getCategory) => {
+        // console.log(errorGetCategory);
+        // response.send(getCategory);
+        if (errorGetCategory) {
+            return response.status(500).send(errorGetCategory);
         }
-        // console.log(category);
-        // console.log(childCategory);
-        // console.log(categoryFind);
-        response.status(200).send(categoryFind);
+        if (getCategory && getCategory !== 0) {
+            return response.status(200).send(getCategory);
+        }
     });
+    // var category = {};
+    // var childCategory = [];
+    // CategoryModel.find({}, {category_id: 1, category_name: 1, category_child: 1, _id: 0}, (errorCategoryFind, categoryFind) => {
+    //     if (!errorCategoryFind && (!categoryFind || categoryFind.length === 0)) {
+    //         return response.status(400).send('no category present');
+    //     } else if (errorCategoryFind) {
+    //         return response.status(500).send(errorCategoryFind);
+    //     } else {
+    //         categoryFind.forEach((items, index) => {
+    //         // let id = items.category_id;
+    //         category[items.category_id] = items.category_name;
+    //         childCategory.push(items.category_child);
+    //         // let childCatedoryIds = categoryFind.category_child;
+    //         // console.log(childCatedoryIds);
+    //         });
+    //         childCategory.forEach((items) => {
+    //         items.forEach((item, index )=> {
+    //             items[index] = {category_id: item ,category_name: category[item]};
+    //             // console.log(category[item]);
+    //         });
+    //         });
+    //         // categoryFind.forEach((item) => {
+    //         //   console.log(item.category_child);
+    //         // });
+    //         // return response.status(200).send(categoryFind);
+    //     }
+    //     // console.log(category);
+    //     // console.log(childCategory);
+    //     // console.log(categoryFind);
+    //     response.status(200).send(categoryFind);
+    // });
 });
 
 categoryRoute.post('/categories', (request, response) => {
-    if (Object.keys(request.body).length === 0 && request.body.constructor === Object) {
+    if (isObjectEmpty(request.body)) {
         return response.status(400).send('Request body is missing');
-    }
-
-    if (request.body.category_child != 0) {
-        console.log(request.body.category_child);
-        CategoryModel.find({category_id: {$in: request.body.category_child}}, (errorCategoryChildFind, categoryChildFind) => {
-        //     if(categoryChildFind.length !== request.body.category_child.length) {
-        //         return response.status(400).send('child category does not exist');
-        //     }
-            if (!errorCategoryChildFind && (!categoryChildFind || categoryChildFind.length !== request.body.category_child.length)) {
-                return response.status(400).send('invalid child category');
-            } else if (errorCategoryChildFind) {
-                return response.status(500).send(errorCategoryChildFind);
+    } else {
+        UniqueIdModel.findOneAndUpdate({unique_key: 'category_id'}, {$inc: {unique_id: 1}},(errorGetuniqueId, getuniqueId) => {
+            if (errorGetuniqueId) {
+              return false;
             } else {
-                addCategory(request, response);
+              console.log(getuniqueId);
+              request.body.category_id = getuniqueId.unique_id;
+              console.log(request.body);
             }
         });
-    } else {
-        // console.log(2);
-        addCategory(request, response);
     }
 
-
-
-    // CategoryModel.find({category_id: {$all: request.body.category_child}}, {category_id: 1, _id: 0 })
-    // .then(doc => {
-    //     console.log(doc);
-    //     if (!docs || docs.length == 0) {
-    //         return response.status(400).send("invalid child category")
-    //     }
-    // })
-    // .catch(err => {
-    //     return response.status(500).json(err);
-    // })
-
-    // request.body.category_child = request.body.category_child.filter((item, pos) => {
-    //     return request.body.category_child.indexOf(item) == pos;
-    // })
-
-    // let model = new CategoryModel(request.body)
-    // model.save()
-    // .then(doc => {
-    //     if (!doc || doc.length == 0) {
-    //         return response.status(500).send(doc);
-    //     }
-    //     response.status(201).json(doc);
-    // })
-    // .catch(err => {
-    //     response.status(500).json(err);
-    // })
-})
-
-function addCategory (request, response) {
-    CategoryModel.find({category_id: request.body.category_id}, (errorCategoryFind, categoryFind) => {
-        if (!errorCategoryFind && (!categoryFind || categoryFind.length === 0)) {
-            let model = new CategoryModel(request.body)
-            model.save().then(insertCategory => {
-                if (!insertCategory || insertCategory.length === 0) {
-                    return response.status(500).send(insertCategory);
-                }
-                response.status(201).json(insertCategory);
-            })
-            .catch(insertError => {
-                response.status(500).json(insertError);
-            })
-        } else if (errorCategoryFind) {
-            response.status(500).send(errorCategoryFind);
+    CategoryModel.find({category_id: request.body.category_id}, (errorFindCategoryId, findCategoryId) => {
+        if (errorFindCategoryId) {
+            return response.status(500).send(errorFindCategoryId);
+        }
+        if (!findCategoryId || findCategoryId.length === 0) {
+            if (request.body.category_child.length !== 0) {
+                CategoryModel.find({category_id: {$in: request.body.category_child}}, (errorFindCategory, findCategory) => {
+                    if (errorFindCategory) {
+                        return response.status(500).send(errorFindCategory);
+                    }
+                    if (findCategory && findCategory.length == request.body.category_child.length) {
+                        // console.log('perfect');
+                        CategoryModel.create(request.body, (errorCategoryCreate, categoryCreate) => {
+                            if (errorCategoryCreate) {
+                                return response.status(500).send(errorCategoryCreate);
+                            } else if (categoryCreate && categoryCreate !== 0) {
+                                return response.status(201).send(categoryCreate);
+                            }
+                        });
+                    } else {
+                        return response.status(400).send('Something worng with product_category or category does not exist');
+                    }
+                })
+            } else {
+                CategoryModel.create(request.body, (errorCategoryCreate, categoryCreate) => {
+                    if (errorCategoryCreate) {
+                        return response.status(500).send(errorCategoryCreate);
+                    } else if (categoryCreate && categoryCreate !== 0) {
+                        return response.status(201).send(categoryCreate);
+                    }
+                });
+            }
         } else {
-            response.status(400).send("Category Already Exist");
+            return response.status(400).send('Category with category id: '+request.body.category_id+' already exist');
         }
     });
-}
+});
+
+function isObjectEmpty(object) {
+    for(var key in object) {
+      if(object.hasOwnProperty(key)) {
+        return false;
+      }
+    }
+  return true;
+  }
 
 module.exports = categoryRoute;

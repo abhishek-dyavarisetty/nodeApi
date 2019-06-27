@@ -1,25 +1,26 @@
 const mongoose = require('mongoose');
 
-let CategorySchema = new mongoose.Schema({
-    category_id: {
-        type: Number,
-        required: true
-    },
-    category_name: {
-        type: String,
-        required: true
-    },
-    category_child: {
-        type: [Number],
-        // validate: {
-        //     validator: (validation, cb) => {
-        //         categories.find({category_id: {$all: validation}}, () => {
-        //             cb(docs.length == 0);
-        //         });
-        //     },
-        //     message: 'category already exists!'
-        // }
-    }
-});
+// let productCategorySchema = new mongoose.Schema({
+//   category_id: Number
+// });
 
-module.exports = mongoose.model('categories', CategorySchema);
+let productCategorySchema = new mongoose.Schema({
+  
+})
+
+let ProductSchema = new mongoose.Schema({
+    product_id: {
+      type: Number,
+      required: true
+    },
+    product_name: {
+      type: String,
+      required: true
+    },
+    product_price: Number,
+    product_category: {
+      type: [Number],
+    },
+  })
+
+module.exports = mongoose.model('products', ProductSchema);
