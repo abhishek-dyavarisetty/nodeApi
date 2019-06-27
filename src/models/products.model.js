@@ -19,7 +19,7 @@ let ProductSchema = new mongoose.Schema({
     },
     product_price: Number,
     product_category: {
-    type: [Number],
+      type: [Number],
     },
   })
 

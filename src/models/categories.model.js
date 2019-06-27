@@ -1,26 +1,17 @@
 const mongoose = require('mongoose');
 
-// let productCategorySchema = new mongoose.Schema({
-//   category_id: Number
-// });
-
-let productCategorySchema = new mongoose.Schema({
-  
-})
-
-let ProductSchema = new mongoose.Schema({
-    product_id: {
-      type: Number,
-      required: true
+let CategorySchema = new mongoose.Schema({
+    category_id: {
+        type: Number,
+        required: true
     },
-    product_name: {
-      type: String,
-      required: true
+    category_name: {
+        type: String,
+        required: true
     },
-    product_price: Number,
-    product_category: {
-      type: [Number],
-    },
-  })
+    category_child: {
+        type: [Number]
+    }
+});
 
-module.exports = mongoose.model('products', ProductSchema);
+module.exports = mongoose.model('categories', CategorySchema);
